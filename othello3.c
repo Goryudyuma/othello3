@@ -201,6 +201,7 @@ int J_hikkurikaeshi(){
 
 int J_KANAME(int PorH){
 	if((J_BAN[x][y]==NONE||J_BAN[x][y]==HINT)&&x>=1&&x<=8&&y>=1&&y<=8){//駒がない&盤上でのみ判定。
+		J_flag[5]=0;
 		for(i=-1;i<=1;i++){
 			for(j=-1;j<=1;j++){                                        //そのマスの周り八マスを判定
 				if(!(i==0&&j==0)){
@@ -212,6 +213,8 @@ int J_KANAME(int PorH){
 						if(PorH==1){
 							J_BAN[x][y]=HINT;                          //その場所がおけるという判定をし、
 							J_HINT[++o]=(x)*10+(y)+300;                //その場所を記憶。
+							J_flag[5]=1;
+							break;
 						}else if(PorH==2){
 							for(m=0;m<=p;m++){
 								J_BAN[x+m*i][y+m*j]=J_teban;           //置いたマスから自分のマスまでの敵の駒をひっくり返す。
@@ -219,6 +222,9 @@ int J_KANAME(int PorH){
 						}
 					}
 				}
+			}
+			if(J_flag[5]==1){
+				break;
 			}
 		}
 	}
