@@ -28,7 +28,10 @@ int J_x,J_y;
 int J_wincount[3]={0,0,0};
 
 int henkan(int t){                               //•ÏŠ·‚·‚éŠÖ”
-	if(t/100==3){
+	if(t/100==4){
+		J_x=t%10;
+		J_y=(t%100)/10;
+	}else if(t/100==3){
 		J_x=(J_HINT[t%100]-300)/10;
 		J_y=(J_HINT[t%100]-300)%10;
 	}else if(t/100==2){
