@@ -78,7 +78,7 @@ int endflag(int shiaisuu){
 
 //ここから下はシステムに関わるもの。見るだけなら可、弄るのは不可。
 
-int J_tekinote(){
+static int J_tekinote(){
 	tekinote[1]=10*J_x+J_y+100;
 	tekinote[2]=J_x+8*(J_y-1)+200;
 	i=1;
@@ -89,7 +89,7 @@ int J_tekinote(){
 	tekinote[4]=J_x+10*J_y+100;
 }
 
-int J_turn(int shiaisuu){
+static int J_turn(int shiaisuu){
 	for(i=0;i<=10;i++){
 		for(j=0;j<=10;j++){
 			BAN[i][j]=J_BAN[i][j];
@@ -107,7 +107,7 @@ int J_turn(int shiaisuu){
 }
 
 
-int J_hyouzi(){                                //表示プログラム
+static int J_hyouzi(){                                //表示プログラム
 	int count[3];
 	count[2]=count[1]=count[0]=0;
 	printf("\n");
@@ -157,7 +157,7 @@ int J_hyouzi(){                                //表示プログラム
 	printf("●%d枚 ○%d枚\n",count[1],count[2]);
 }
 
-int J_zyunbi(){                                  //初期化＆初期位置に駒を置く
+static int J_zyunbi(){                                  //初期化＆初期位置に駒を置く
 	for(y=0;y<MASUmax+2;y++){
 		for(x=0;x<MASUmax+2;x++){
 			J_BAN[x][y]=NONE;
@@ -171,7 +171,7 @@ int J_zyunbi(){                                  //初期化＆初期位置に駒を置く
 	}
 }
 
-int J_passJud(int shiaisuu){                      //パス判定をする
+static int J_passJud(int shiaisuu){                      //パス判定をする
 	for(i=0;i<=64;i++){
 		J_HINT[i]=0;
 	}
@@ -198,14 +198,14 @@ int J_passJud(int shiaisuu){                      //パス判定をする
 
 }
 
-int J_hikkurikaeshi(){
+static int J_hikkurikaeshi(){
 	x=J_x;
 	y=J_y;
 	J_KANAME(2);                                     //KANAMEにxとyを使ったので、ここで変換
 }
 
 
-int J_KANAME(int PorH){
+static int J_KANAME(int PorH){
 	if((J_BAN[x][y]==NONE||J_BAN[x][y]==HINT)&&x>=1&&x<=8&&y>=1&&y<=8){//駒がない&盤上でのみ判定。
 		J_flag[5]=0;
 		for(i=-1;i<=1;i++){
@@ -236,7 +236,7 @@ int J_KANAME(int PorH){
 	}
 }
 
-int J_shiaimae(){
+static int J_shiaimae(){
 	printf("盤を使うなら1、使わないなら0を入力：");
 	scanf("%d",&J_flag[1]);
 	printf("1P番");
@@ -246,7 +246,7 @@ int J_shiaimae(){
 	srand((unsigned) time(NULL));
 }
 
-int J_endflag(int shiaisuu){
+static int J_endflag(int shiaisuu){
 	int count[2]={0,0};
 	for(i=1;i<=MASUmax;i++){                                            //両者のコマの数を数えて終了するかどうか判定する
 		for(j=1;j<=MASUmax;j++){
@@ -271,7 +271,7 @@ int J_endflag(int shiaisuu){
 	}
 }
 
-int J_kekkahyouzi(){
+static int J_kekkahyouzi(){
 	printf("1P:%d勝 2P:%d勝\n",J_wincount[0],J_wincount[1]);
 	if(J_wincount[0]!=J_wincount[1]){
 		J_wincount[0]>J_wincount[1]?printf("1Pの勝利"):printf("2Pの勝利\n"); //勝ち数が多いほうが勝ち
