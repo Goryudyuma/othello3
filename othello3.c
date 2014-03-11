@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <direct.h>
+#include <time.h>
+#include <stdlib.h>
 
 #define SENTE 1
 #define GOTE -1
@@ -27,14 +29,13 @@ int J_TE;
 int J_x,J_y;
 int J_wincount[3]={0,0,0};
 
-
-int henkan(int t){//変換する関数
+int henkan(int t){                               //変換する関数
 	if(t/100==4){
 		J_x=t%10;
 		J_y=(t%100)/10;
 	}else if(t/100==3){
-		J_x=(J_HINT[t%100]-300)/10;
-		J_y=(J_HINT[t%100]-300)%10;
+		J_x=(J_HINT[t%100]-100)/10;
+		J_y=(J_HINT[t%100]-100)%10;
 	}else if(t/100==2){
 		J_x=((t%100)-1)%8+1;
 		J_y=((t%100)-1)/8+1;
@@ -57,8 +58,7 @@ int senshu(int shiaisuu){
 		henkan(301);
 	}else if(J_flag[4]==3){
 		henkan(AI());
-	}
-	/*else if(J_flag[4]==4){
+	}/*else if(J_flag[4]==4){
 		このあたりにAIの呼び出しをする
 		henkan(??);
 	}*/
@@ -78,18 +78,18 @@ int endflag(int shiaisuu){
 
 //ここから下はシステムに関わるもの。見るだけなら可、弄るのは不可。
 
-static int J_tekinote(){
+int J_tekinote(){
 	tekinote[1]=10*J_x+J_y+100;
 	tekinote[2]=J_x+8*(J_y-1)+200;
 	i=1;
-	while(J_HINT[i]-300!=J_x*10+J_y){
+	while(J_HINT[i]-100!=J_x*10+J_y){
 		i++;
 	}
 	tekinote[3]=i+300;
 	tekinote[4]=J_x+10*J_y+100;
 }
 
-static int J_turn(int shiaisuu){
+int J_turn(int shiaisuu){
 	for(i=0;i<=10;i++){
 		for(j=0;j<=10;j++){
 			BAN[i][j]=J_BAN[i][j];
@@ -107,7 +107,7 @@ static int J_turn(int shiaisuu){
 }
 
 
-static int J_hyouzi(){                                //表示プログラム
+int J_hyouzi(){                                //表示プログラム
 	int count[3];
 	count[2]=count[1]=count[0]=0;
 	printf("\n");
@@ -157,7 +157,7 @@ static int J_hyouzi(){                                //表示プログラム
 	printf("●%d枚 ○%d枚\n",count[1],count[2]);
 }
 
-static int J_zyunbi(){                                  //初期化＆初期位置に駒を置く
+int J_zyunbi(){                                  //初期化＆初期位置に駒を置く
 	for(y=0;y<MASUmax+2;y++){
 		for(x=0;x<MASUmax+2;x++){
 			J_BAN[x][y]=NONE;
@@ -171,7 +171,7 @@ static int J_zyunbi(){                                  //初期化＆初期位置に駒を
 	}
 }
 
-static int J_passJud(int shiaisuu){                      //パス判定をする
+int J_passJud(int shiaisuu){                      //パス判定をする
 	for(i=0;i<=64;i++){
 		J_HINT[i]=0;
 	}
@@ -198,14 +198,14 @@ static int J_passJud(int shiaisuu){                      //パス判定をする
 
 }
 
-static int J_hikkurikaeshi(){
+int J_hikkurikaeshi(){
 	x=J_x;
 	y=J_y;
 	J_KANAME(2);                                     //KANAMEにxとyを使ったので、ここで変換
 }
 
 
-static int J_KANAME(int PorH){
+int J_KANAME(int PorH){
 	if((J_BAN[x][y]==NONE||J_BAN[x][y]==HINT)&&x>=1&&x<=8&&y>=1&&y<=8){//駒がない&盤上でのみ判定。
 		J_flag[5]=0;
 		for(i=-1;i<=1;i++){
@@ -236,16 +236,17 @@ static int J_KANAME(int PorH){
 	}
 }
 
-static int J_shiaimae(){
+int J_shiaimae(){
 	printf("盤を使うなら1、使わないなら0を入力：");
 	scanf("%d",&J_flag[1]);
 	printf("1P番");
 	scanf("%d",&J_flag[2]);
 	printf("2P番");
 	scanf("%d",&J_flag[3]);
+	srand((unsigned) time(NULL));
 }
 
-static int J_endflag(int shiaisuu){
+int J_endflag(int shiaisuu){
 	int count[2]={0,0};
 	for(i=1;i<=MASUmax;i++){                                            //両者のコマの数を数えて終了するかどうか判定する
 		for(j=1;j<=MASUmax;j++){
@@ -270,7 +271,7 @@ static int J_endflag(int shiaisuu){
 	}
 }
 
-static int J_kekkahyouzi(){
+int J_kekkahyouzi(){
 	printf("1P:%d勝 2P:%d勝\n",J_wincount[0],J_wincount[1]);
 	if(J_wincount[0]!=J_wincount[1]){
 		J_wincount[0]>J_wincount[1]?printf("1Pの勝利"):printf("2Pの勝利\n"); //勝ち数が多いほうが勝ち
