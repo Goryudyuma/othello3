@@ -3,14 +3,10 @@
 #include <time.h>
 #include <stdlib.h>
 
-#define SENTE 1
-#define GOTE -1
-#define NONE 0
-#define HINT 2
-#define MASUmax 8
-#define WHITE GOTE
-#define BLACK SENTE
-#define TAISENSUU 100
+#include "main.h"
+#include "J_system.h"
+
+
 
 //自由に使っていい変数。ループなど、その場で終わるのに使うのを推奨。
 int i,j,k,l,m,n,o,p;
@@ -21,15 +17,8 @@ int tekinote[5]={0,0,0,0,0};
 
 
 //ここからメインプログラム。
-int J_BAN[MASUmax+2][MASUmax+2];
-int J_flag[10];
-int J_HINT[65];
-int J_teban;
-int J_TE;
-int J_x,J_y;
-int J_wincount[3]={0,0,0};
 
-int henkan(int t){                               //変換する関数
+void henkan(int t){                               //変換する関数
 	if(t/100==4){
 		J_x=t%10;
 		J_y=(t%100)/10;
@@ -49,7 +38,7 @@ int AI(){
 	return 301;                                   //AIの一例。
 }
 
-int senshu(int shiaisuu){
+void senshu(int shiaisuu){
 	if(J_flag[4]==1){
 		printf("条件にあった三桁の整数を入れてください");
 		scanf("%d",&J_TE);
@@ -70,7 +59,7 @@ int senshu(int shiaisuu){
 	}
 }
 
-int endflag(int shiaisuu){
+void endflag(int shiaisuu){
 	/*ここに既読した時の処理の関数の呼び出しを入れる。*/
 }
 
@@ -78,7 +67,7 @@ int endflag(int shiaisuu){
 
 //ここから下はシステムに関わるもの。見るだけなら可、弄るのは不可。
 
-static int J_tekinote(){
+void J_tekinote(){
 	tekinote[1]=10*J_x+J_y+100;
 	tekinote[2]=J_x+8*(J_y-1)+200;
 	i=1;
@@ -89,25 +78,8 @@ static int J_tekinote(){
 	tekinote[4]=J_x+10*J_y+100;
 }
 
-static int J_turn(int shiaisuu){
-	for(i=0;i<=10;i++){
-		for(j=0;j<=10;j++){
-			BAN[i][j]=J_BAN[i][j];
-		}
-	}
-	for(i=0;i<65;i++){                                     //ヒントと盤を与えた上で手番
-		hint[i]=J_HINT[i];
-	}
-	if((J_teban==SENTE&&shiaisuu%2==1)||(J_teban==GOTE&&shiaisuu%2==0)){ //試合数が奇数なら1Pが先手、偶数なら1Pは後手
-		J_flag[4]=J_flag[2];
-	}else{
-		J_flag[4]=J_flag[3];
-	}
-	senshu(shiaisuu);
-}
 
-
-static int J_hyouzi(){                                //表示プログラム
+void J_hyouzi(){                                //表示プログラム
 	int count[3];
 	count[2]=count[1]=count[0]=0;
 	printf("\n");
@@ -157,7 +129,7 @@ static int J_hyouzi(){                                //表示プログラム
 	printf("●%d枚 ○%d枚\n",count[1],count[2]);
 }
 
-static int J_zyunbi(){                                  //初期化＆初期位置に駒を置く
+void J_zyunbi(){                                  //初期化＆初期位置に駒を置く
 	for(y=0;y<MASUmax+2;y++){
 		for(x=0;x<MASUmax+2;x++){
 			J_BAN[x][y]=NONE;
@@ -171,7 +143,7 @@ static int J_zyunbi(){                                  //初期化＆初期位置に駒を
 	}
 }
 
-static int J_passJud(int shiaisuu){                      //パス判定をする
+void J_passJud(int shiaisuu){                      //パス判定をする
 	for(i=0;i<=64;i++){
 		J_HINT[i]=0;
 	}
@@ -198,14 +170,32 @@ static int J_passJud(int shiaisuu){                      //パス判定をする
 
 }
 
-static int J_hikkurikaeshi(){
+void J_turn(int shiaisuu){
+	for(i=0;i<=10;i++){
+		for(j=0;j<=10;j++){
+			BAN[i][j]=J_BAN[i][j];
+		}
+	}
+	for(i=0;i<65;i++){                                     //ヒントと盤を与えた上で手番
+		hint[i]=J_HINT[i];
+	}
+	if((J_teban==SENTE&&shiaisuu%2==1)||(J_teban==GOTE&&shiaisuu%2==0)){ //試合数が奇数なら1Pが先手、偶数なら1Pは後手
+		J_flag[4]=J_flag[2];
+	}else{
+		J_flag[4]=J_flag[3];
+	}
+	senshu(shiaisuu);
+}
+
+
+void J_hikkurikaeshi(){
 	x=J_x;
 	y=J_y;
 	J_KANAME(2);                                     //KANAMEにxとyを使ったので、ここで変換
 }
 
 
-static int J_KANAME(int PorH){
+void J_KANAME(int PorH){
 	if((J_BAN[x][y]==NONE||J_BAN[x][y]==HINT)&&x>=1&&x<=8&&y>=1&&y<=8){//駒がない&盤上でのみ判定。
 		J_flag[5]=0;
 		for(i=-1;i<=1;i++){
@@ -236,7 +226,7 @@ static int J_KANAME(int PorH){
 	}
 }
 
-static int J_shiaimae(){
+void J_shiaimae(){
 	printf("盤を使うなら1、使わないなら0を入力：");
 	scanf("%d",&J_flag[1]);
 	printf("1P番");
@@ -246,7 +236,7 @@ static int J_shiaimae(){
 	srand((unsigned) time(NULL));
 }
 
-static int J_endflag(int shiaisuu){
+void J_endflag(int shiaisuu){
 	int count[2]={0,0};
 	for(i=1;i<=MASUmax;i++){                                            //両者のコマの数を数えて終了するかどうか判定する
 		for(j=1;j<=MASUmax;j++){
@@ -271,7 +261,7 @@ static int J_endflag(int shiaisuu){
 	}
 }
 
-static int J_kekkahyouzi(){
+void J_kekkahyouzi(){
 	printf("1P:%d勝 2P:%d勝\n",J_wincount[0],J_wincount[1]);
 	if(J_wincount[0]!=J_wincount[1]){
 		J_wincount[0]>J_wincount[1]?printf("1Pの勝利"):printf("2Pの勝利\n"); //勝ち数が多いほうが勝ち
