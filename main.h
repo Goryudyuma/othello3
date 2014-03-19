@@ -1,3 +1,5 @@
+#ifndef ___MAINHEADER
+  #define ___MAINHEADER
 #define SENTE 1
 #define GOTE -1
 #define NONE 0
@@ -8,3 +10,5 @@
 void henkan(int);
 void senshu(int);
 void endflag(int);
+
+#endif
